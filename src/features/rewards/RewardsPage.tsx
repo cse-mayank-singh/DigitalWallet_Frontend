@@ -16,7 +16,7 @@ function fmt(a: number | string): string {
 const TIER_INFO: Record<string, { gradient: string; label: string; min: number; icon: React.ElementType }> = {
   BRONZE:   { gradient: 'from-orange-400 to-orange-600',   label: 'Bronze',   min: 0,    icon: Award },
   SILVER:   { gradient: 'from-slate-400 to-slate-600',     label: 'Silver',   min: 500,  icon: Award },
-  GOLD:     { gradient: 'from-yellow-400 to-yellow-600',   label: 'Gold',     min: 2000, icon: Crown },
+  GOLD:     { gradient: 'from-yellow-400 to-yellow-600',   label: 'Gold',     min: 1000, icon: Crown },
   PLATINUM: { gradient: 'from-blue-500 to-pink-500',       label: 'Platinum', min: 5000, icon: Sparkles },
 };
 
@@ -161,11 +161,7 @@ export default function RewardsPage() {
               </div>
             </div>
           )}
-          {!summary?.nextTier && (
-            <div className="mb-5 flex items-center gap-2 text-sm opacity-80">
-              <Sparkles className="w-4 h-4" /> You've reached the highest tier!
-            </div>
-          )}
+          
 
           <div className="flex gap-3 flex-wrap">
             <button

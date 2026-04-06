@@ -13,9 +13,11 @@ type WSHandlers = {
 const WS_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080')
   .replace(/^http/, 'ws') + '/ws';
 
+const WS_ENABLED = import.meta.env.VITE_WS_ENABLED === 'true';
+
 /**
  * Connects to the backend WebSocket for real-time balance/transaction updates.
- * Automatically reconnects on disconnect with exponential backoff.
+ * Only active when VITE_WS_ENABLED=true in .env
  */
 export function useWebSocket(handlers: WSHandlers, enabled = true) {
   const wsRef = useRef<WebSocket | null>(null);
@@ -23,7 +25,7 @@ export function useWebSocket(handlers: WSHandlers, enabled = true) {
   const unmountedRef = useRef(false);
 
   const connect = useCallback(() => {
-    if (unmountedRef.current || !enabled) return;
+    if (unmountedRef.current || !enabled || !WS_ENABLED) return;
 
     const token = sessionStorage.getItem('accessToken');
     const url = token ? `${WS_URL}?token=${token}` : WS_URL;
@@ -51,7 +53,7 @@ export function useWebSocket(handlers: WSHandlers, enabled = true) {
       };
 
       ws.onclose = () => {
-        if (!unmountedRef.current && enabled) {
+        if (!unmountedRef.current && enabled && WS_ENABLED) {
           // exponential backoff: 1s → 2s → 4s → max 30s
           setTimeout(connect, Math.min(reconnectDelay.current, 30000));
           reconnectDelay.current = reconnectDelay.current * 2;
