@@ -51,7 +51,6 @@ export function ToastProvider() {
     </div>
   );
 }
-
 export const toast = {
   success: (message: string, title?: string) => toastFn?.({ type: 'success', message, title }),
   error: (message: string, title?: string) => toastFn?.({ type: 'error', message, title }),

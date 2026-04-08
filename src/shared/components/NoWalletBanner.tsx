@@ -129,7 +129,7 @@ export default function NoWalletBanner({
             </div>
 
             <h2 className="text-2xl font-bold text-yellow-300 mb-2">
-              Wallet Locked 🔒
+              Wallet Locked 
             </h2>
 
             <p className="text-sm text-yellow-200/80 max-w-sm mx-auto">
@@ -226,7 +226,7 @@ export default function NoWalletBanner({
           <Clock className="w-10 h-10 mx-auto text-yellow-400 mb-3 animate-pulse" />
           <p className="font-bold text-yellow-300">Verification in progress</p>
           <p className="text-xs text-yellow-200/70 mt-1">
-            This usually takes 24–48 hours
+            This usually takes 24 hours
           </p>
         </div>
       )}

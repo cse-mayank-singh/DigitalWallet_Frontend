@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   Wallet, Star, Mail, Phone, Globe, Send, Shield, Gift,
   TrendingUp, ArrowRight, Zap, Lock, CheckCircle, Users,
-  BarChart3, CreditCard, Bell, ChevronRight, Award
+  BarChart3, CreditCard, Bell, ChevronRight, Award, Sun, Moon
 } from 'lucide-react';
 import { useTheme } from '../../store/ThemeContext';
 
@@ -27,11 +27,14 @@ function LandingNavbar() {
           <span className="font-bold text-lg tracking-tight">DigiWallet</span>
         </div>
 
-        
-
         <div className="flex items-center gap-3">
-          <button onClick={toggle} className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-[var(--primary-light)] transition-colors">
-            {isDark ? '☀️' : '🌙'}
+          <button
+            onClick={toggle}
+            title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            className="w-9 h-9 rounded-xl flex items-center justify-center border border-[var(--border)] bg-[var(--bg-card)] text-[var(--text)] hover:bg-[var(--primary-light)] transition-colors"
+          >
+            {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
           <Link to="/login" className="btn-ghost text-sm px-4 py-2">Login</Link>
           <Link to="/signup" className="btn-primary text-sm px-5 py-2">Get Started</Link>
@@ -48,10 +51,12 @@ function HeroSection() {
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-blue-500/10 rounded-full blur-3xl" />
         <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-pink-500/8 rounded-full blur-3xl" />
-        <div className="absolute inset-0"
+        <div
+          className="absolute inset-0"
           style={{
             backgroundImage: 'radial-gradient(circle at 50% 50%, transparent 0%, var(--bg) 80%)',
-          }} />
+          }}
+        />
       </div>
 
       <div className="max-w-5xl mx-auto px-6 relative">
@@ -88,9 +93,9 @@ function HeroSection() {
         <div className="flex justify-center gap-8 sm:gap-16 flex-wrap">
           {[
             { icon: Users, value: '2M+', label: 'Active Users' },
-            { icon: TrendingUp, value: '₹500Cr+', label: 'Processed' },
+            { icon: TrendingUp, value: '1500Cr+', label: 'Processed' },
             { icon: Shield, value: '99.9%', label: 'Uptime' },
-            { icon: Star, value: '4.9★', label: 'App Rating' },
+            { icon: Star, value: '4.9', label: 'App Rating' },
           ].map(({ icon: Icon, value, label }) => (
             <div key={label} className="text-center">
               <div className="flex items-center justify-center gap-1.5 mb-1">
@@ -111,14 +116,14 @@ function FeaturesSection() {
     {
       icon: Zap,
       title: 'Instant Transfers',
-      desc: 'Send money to anyone in India instantly. No delays, no queues — just fast, reliable transfers 24/7.',
+      desc: 'Send money to anyone in India instantly. No delays, no queues; just fast, reliable transfers 24/7.',
       color: 'text-yellow-500',
       bg: 'bg-yellow-500/10',
     },
     {
       icon: Shield,
       title: 'Bank-Grade Security',
-      desc: 'Your money is protected by 256-bit encryption, 2FA, and full KYC verification.',
+      desc: 'Your money is protected by 256-bit encryption, MFA, and full KYC verification.',
       color: 'text-emerald-500',
       bg: 'bg-emerald-500/10',
     },
@@ -146,7 +151,7 @@ function FeaturesSection() {
     {
       icon: Bell,
       title: 'Real-Time Alerts',
-      desc: 'Instant notifications for every debit, credit, and reward — never miss a transaction.',
+      desc: 'Instant notifications for every debit, credit, and rewards; never miss a transaction.',
       color: 'text-orange-500',
       bg: 'bg-orange-500/10',
     },
@@ -158,7 +163,7 @@ function FeaturesSection() {
         <div className="text-center mb-16">
           <span className="text-xs font-semibold tracking-widest text-[var(--primary)] uppercase mb-3 block">Everything you need</span>
           <h2 className="text-4xl font-bold mb-4">Built for modern payments</h2>
-          <p className="text-[var(--text-muted)] max-w-xl mx-auto">All the tools you need to send, receive, and manage money — in one beautifully simple app.</p>
+          <p className="text-[var(--text-muted)] max-w-xl mx-auto">All the tools you need to send, receive, and manage money” in one beautifully simple app.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -217,7 +222,7 @@ function TrustSection() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
               { icon: Shield, label: '256-bit SSL Encryption', color: 'text-emerald-500' },
-              { icon: Lock, label: '2-Factor Authentication', color: 'text-blue-500' },
+              { icon: Lock, label: 'Multi-Authentication System', color: 'text-blue-500' },
               { icon: CheckCircle, label: 'RBI Compliant', color: 'text-purple-500' },
               { icon: Award, label: 'ISO 27001 Certified', color: 'text-orange-500' },
             ].map(({ icon: Icon, label, color }) => (
@@ -277,6 +282,7 @@ function TestimonialsSection() {
     </section>
   );
 }
+
 function Footer() {
   const links = {
     Product: ['Features', 'Security', 'Pricing', 'Changelog'],
@@ -320,12 +326,12 @@ function Footer() {
         </div>
 
         <div className="border-t border-[var(--border)] pt-6 text-xs text-[var(--text-muted)] flex flex-col sm:flex-row justify-between gap-3">
-          <span>© {new Date().getFullYear()} DigiWallet. All rights reserved.</span>
+          <span>Â© {new Date().getFullYear()} DigiWallet. All rights reserved.</span>
           <div className="flex gap-4">
             <span>RBI Registered</span>
-            <span>·</span>
+            <span>Â·</span>
             <span>PCI-DSS Compliant</span>
-            <span>·</span>
+            <span>Â·</span>
             <span>ISO 27001</span>
           </div>
         </div>

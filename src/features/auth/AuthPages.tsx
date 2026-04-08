@@ -20,13 +20,11 @@ function AuthShell({ children, title, subtitle }: {
   return (
     <div className="min-h-screen bg-[var(--bg)] relative flex items-center justify-center overflow-hidden">
 
-      {/* 🔥 Blurred gradient sides */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute left-[-10%] top-0 w-[40%] h-full bg-blue-500/20 blur-[120px]" />
         <div className="absolute right-[-10%] top-0 w-[40%] h-full bg-pink-500/20 blur-[120px]" />
       </div>
 
-      {/* 🔥 Top bar (theme toggle + logo) */}
       <div className="absolute top-0 left-0 w-full flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-pink-500 flex items-center justify-center">
@@ -43,7 +41,6 @@ function AuthShell({ children, title, subtitle }: {
         </button>
       </div>
 
-      {/* 🔥 Center Card */}
       <div className="relative w-full max-w-[420px] z-10">
         <div className="backdrop-blur-xl bg-white/70 dark:bg-slate-900/60 border border-[var(--border)] shadow-2xl rounded-3xl p-8">
 
@@ -238,7 +235,7 @@ export function LoginPage() {
         <div className="mb-5 flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 rounded-xl px-4 py-3 text-sm">
           <span className="text-lg leading-none">⏱</span>
           <div>
-            <p className="font-semibold">Your session has expired</p>
+            <p className="font-semibold">Invalid Email or Password</p>
             <p className="text-xs mt-0.5 opacity-80">Please sign in again to continue.</p>
           </div>
         </div>
@@ -399,22 +396,42 @@ export function SignupPage() {
   return (
     <AuthShell title="Create account" subtitle="Join 2 million users on DigiWallet">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <InputGroup label="Full name" icon={User} placeholder="John Doe" error={errors.fullName}
-          {...register('fullName', {
-            required: 'Name is required',
-            minLength: { value: 2, message: 'Min 2 characters' }
-          })} />
-
+        <InputGroup
+            label="Full name"
+            icon={User}
+            placeholder="John Doe"
+            error={errors.fullName}
+            {...register('fullName', {
+              required: 'Name is required',
+              minLength: { value: 2, message: 'Min 2 characters' },
+              pattern: {
+                value: /^[A-Za-z\s]+$/,
+                message: 'Only letters are allowed (no numbers or symbols)'
+              }
+            })}
+        />
         <div className="grid grid-cols-2 gap-3">
           <InputGroup label="Email" icon={Mail} type="email" placeholder="you@example.com"
             error={errors.email}
             {...register('email', { required: 'Email is required' })} />
-          <InputGroup label="Phone" icon={Phone} type="tel" placeholder="10 digits"
-            error={errors.phone}
-            {...register('phone', {
-              required: 'Phone is required',
-              pattern: { value: /^[0-9]{10,15}$/, message: 'Invalid phone' }
-            })} />
+          <InputGroup
+  label="Phone"
+  icon={Phone}
+  type="tel"
+  placeholder="10 digits"
+  maxLength={10}
+  onInput={(e: React.FormEvent<HTMLInputElement>) => {
+    e.currentTarget.value = e.currentTarget.value.replace(/\D/g, '').slice(0, 10);
+  }}
+  error={errors.phone}
+  {...register('phone', {
+    required: 'Phone is required',
+    pattern: {
+      value: /^[0-9]{10}$/,
+      message: 'Phone must be exactly 10 digits'
+    }
+  })}
+/>
         </div>
 
         <div>

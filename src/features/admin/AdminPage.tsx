@@ -5,6 +5,7 @@ import { StatCard, StatusBadge, LoadingPage, Modal, EmptyState } from '../../sha
 import { toast } from '../../shared/components/Toast';
 import { useNotifications } from '../../store/NotificationContext';
 import { useDebounce } from '../../shared/hooks/useDebounce';
+import { useAuth } from '../../store/AuthContext';
 
 function fmt(n: number | undefined | null): string {
   return Number(n || 0).toLocaleString();
@@ -52,6 +53,7 @@ interface CatalogForm {
 type TabId = 'dashboard' | 'users' | 'kyc' | 'catalog';
 
 export default function AdminPage() {
+  const { user } = useAuth();
   const { addNotification } = useNotifications();
   const [tab, setTab] = useState<TabId>('dashboard');
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -172,6 +174,8 @@ export default function AdminPage() {
     { id: 'catalog', label: 'Catalog' },
   ];
 
+  const currentUserId = user?.id;
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
@@ -240,6 +244,9 @@ export default function AdminPage() {
               </thead>
               <tbody>
                 {users.map((u) => (
+                  (() => {
+                    const isSelf = u.id === currentUserId;
+                    return (
                   <tr key={u.id} className="border-b border-[var(--border)] hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                     <td className="p-4">
                       <div className="flex items-center gap-3">
@@ -254,12 +261,15 @@ export default function AdminPage() {
                     </td>
 
                     <td className="p-4">
-                      <select className="input-field py-1 text-xs w-28" value={u.role || 'USER'}
+                      <select className="input-field py-1 text-xs w-28 disabled:opacity-60 disabled:cursor-not-allowed" value={u.role || 'USER'}
+                        disabled={isSelf}
+                        title={isSelf ? 'You cannot change your own role' : undefined}
                         onChange={(e: ChangeEvent<HTMLSelectElement>) => changeRole(u.id, e.target.value)}>
                         {['USER', 'ADMIN', 'MERCHANT'].map((r) => (
                           <option key={r} value={r}>{r}</option>
                         ))}
                       </select>
+                      {isSelf && <p className="text-[10px] text-[var(--text-muted)] mt-1">Your role is locked</p>}
                     </td>
 
                     <td className="p-4 text-center">
@@ -273,13 +283,17 @@ export default function AdminPage() {
                             u.status === 'BLOCKED'
                               ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 hover:bg-emerald-200'
                               : 'bg-red-100 dark:bg-red-900/30 text-red-600 hover:bg-red-200'
-                          }`}
+                          } disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-inherit`}
+                          disabled={isSelf}
+                          title={isSelf ? 'You cannot block your own account' : undefined}
                           onClick={() => blockUser(u.id, u.status === 'BLOCKED')}>
-                          {u.status === 'BLOCKED' ? 'Unblock' : 'Block'}
+                          {isSelf ? 'Protected' : u.status === 'BLOCKED' ? 'Unblock' : 'Block'}
                         </button>
                       </div>
                     </td>
                   </tr>
+                    );
+                  })()
                 ))}
               </tbody>
             </table>
@@ -289,6 +303,10 @@ export default function AdminPage() {
           <div className="md:hidden divide-y divide-[var(--border)]">
             {users.map((u) => (
               <div key={u.id} className="p-4 space-y-3">
+                {(() => {
+                  const isSelf = u.id === currentUserId;
+                  return (
+                    <>
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-pink-500 text-white font-bold flex items-center justify-center">
                     {(u.name || 'U')[0].toUpperCase()}
@@ -302,16 +320,26 @@ export default function AdminPage() {
                 <div className="flex flex-wrap gap-2 items-center">
                   <StatusBadge status={u.status || 'ACTIVE'} />
 
+                  <span className="text-xs px-2.5 py-1 rounded-lg bg-[var(--bg)] border border-[var(--border)] font-semibold">
+                    {u.role || 'USER'}
+                  </span>
+
                   <button
                     className={`text-xs px-3 py-1 rounded-lg font-semibold ${
                       u.status === 'BLOCKED'
                         ? 'bg-emerald-100 text-emerald-600'
                         : 'bg-red-100 text-red-600'
-                    }`}
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    disabled={isSelf}
+                    title={isSelf ? 'You cannot block your own account' : undefined}
                     onClick={() => blockUser(u.id, u.status === 'BLOCKED')}>
-                    {u.status === 'BLOCKED' ? 'Unblock' : 'Block'}
+                    {isSelf ? 'Protected' : u.status === 'BLOCKED' ? 'Unblock' : 'Block'}
                   </button>
                 </div>
+                {isSelf && <p className="text-xs text-[var(--text-muted)]">Your admin account cannot be blocked or demoted.</p>}
+                    </>
+                  );
+                })()}
               </div>
             ))}
           </div>

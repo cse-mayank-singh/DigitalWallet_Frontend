@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { isWalletNotFound } from '../wallet';
-
+//npm run test:ui
 describe('isWalletNotFound', () => {
   test('returns true for HTTP 404 status', () => {
     expect(isWalletNotFound({ response: { status: 404, data: { message: '' } } })).toBe(true);

@@ -13,7 +13,7 @@ import { useNotifications } from '../../store/NotificationContext';
 const DOC_TYPES = ['AADHAAR', 'PAN', 'PASSPORT', 'DRIVING_LICENSE'];
 
 interface Profile {
-  name?: string; email?: string; phone?: string; status?: string; createdAt?: string;
+  id?: number; name?: string; email?: string; phone?: string; status?: string; createdAt?: string;
 }
 interface KycData {
   status: string; docType?: string; docNumber?: string; submittedAt?: string; rejectionReason?: string;
@@ -90,6 +90,7 @@ export default function ProfilePage() {
   const kycConfig = kycStatusConfig[kycStatus] || kycStatusConfig.NOT_SUBMITTED;
   const KycIcon = kycConfig.icon;
   const initials = (profile?.name || user?.fullName || 'U').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+  const userId = profile?.id ?? user?.id;
 
   return (
   <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
@@ -114,6 +115,11 @@ export default function ProfilePage() {
         <div className="flex justify-center gap-2 mt-3">
           <StatusBadge status={profile?.status || 'ACTIVE'} />
           <StatusBadge status={kycStatus} />
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--bg)] px-4 py-3">
+          <p className="text-xs text-[var(--text-muted)]">User ID</p>
+          <p className="font-semibold">{userId ?? '-'}</p>
         </div>
 
         {/* Actions */}
@@ -195,6 +201,11 @@ export default function ProfilePage() {
       {/* KYC DETAILS */}
       {kyc && kycStatus !== 'NOT_SUBMITTED' && (
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-3xl p-6 grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <p className="text-[var(--text-muted)]">User ID</p>
+            <p className="font-semibold">{userId ?? '-'}</p>
+          </div>
+
           <div>
             <p className="text-[var(--text-muted)]">Doc Type</p>
             <p className="font-semibold">{kyc.docType}</p>
@@ -297,3 +308,4 @@ export default function ProfilePage() {
   </div>
 );
 }
+
